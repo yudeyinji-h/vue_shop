@@ -22,6 +22,7 @@
           :collapse="isCollapse"
           :collapse-transition="false"
           :router="true"
+          :default-active="activePath"
         >
           <!-- unique-opened表示是否只保持一个子菜单的展开;一种直接写unique-opened, 另一种写为 :unique-opened="true" 表示属性绑定-->
           <!-- 一级菜单 -->
@@ -36,7 +37,12 @@
             </template>
 
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id">
+            <el-menu-item
+              :index="'/'+subItem.path"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+              @click="saveNavState('/'+subItem.path)"
+            >
               <!-- 二级菜单模板区域 -->
               <template slot="title">
                 <!-- 图标 -->
@@ -72,11 +78,14 @@ export default {
         145: 'iconfont icon-baobiao'
       },
       // 菜单栏是否折叠
-      isCollapse: false
+      isCollapse: false,
+      // 保存激活的菜单选项
+      activePath: ''
     }
   },
   created() {
     this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout() {
@@ -93,6 +102,11 @@ export default {
     // 点击按钮，切换菜单的折叠与展开
     toggleCollapse() {
       this.isCollapse = !this.isCollapse
+    },
+    // 保存菜单的激活状态
+    saveNavState(activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
     }
   }
 }
