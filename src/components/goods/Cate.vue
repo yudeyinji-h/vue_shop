@@ -16,10 +16,24 @@
       </el-row>
 
       <!-- 表格 -->
-      <tree-table class="treeTable" :data="catelist" :columns="columns" :selection-type="false" :expand-type="false" show-index index-text="#" border :show-row-hover="false">
+      <tree-table
+        class="treeTable"
+        :data="catelist"
+        :columns="columns"
+        :selection-type="false"
+        :expand-type="false"
+        show-index
+        index-text="#"
+        border
+        :show-row-hover="false"
+      >
         <!-- 是否有效 -->
         <template slot="isok" slot-scope="scope">
-          <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color: lightgreen;"></i>
+          <i
+            class="el-icon-success"
+            v-if="scope.row.cat_deleted === false"
+            style="color: lightgreen;"
+          ></i>
           <i class="el-icon-error" v-else style="color: red;"></i>
         </template>
         <!-- 排序 -->
@@ -36,22 +50,46 @@
       </tree-table>
 
       <!-- 分页区域 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="querInfo.pagenum" :page-sizes="[3, 5, 10, 15]" :page-size="querInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="querInfo.pagenum"
+        :page-sizes="[3, 5, 10, 15]"
+        :page-size="querInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
 
     <!-- 添加分类的对话框 -->
-    <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" width="50%" @close="addCateDialogClosed">
+    <el-dialog
+      title="添加分类"
+      :visible.sync="addCateDialogVisible"
+      width="50%"
+      @close="addCateDialogClosed"
+    >
       <!-- 添加分类的表单 -->
-      <el-form :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px">
+      <el-form
+        :model="addCateForm"
+        :rules="addCateFormRules"
+        ref="addCateFormRef"
+        label-width="100px"
+      >
         <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类：">
           <!-- options 用来指定数据源 -->
           <!-- props 用来指定配置对象 -->
-          <el-cascader expand-trigger="hover" :options="parentCateList" :props="cascaderProps" v-model="selectedKeys" @change="parentCateChanged" clearable change-on-select>
-          </el-cascader>
+          <el-cascader
+            expand-trigger="hover"
+            :options="parentCateList"
+            :props="cascaderProps"
+            v-model="selectedKeys"
+            @change="parentCateChanged"
+            clearable
+            change-on-select
+          ></el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -117,9 +155,7 @@ export default {
       },
       // 添加分类表单的验证规则对象
       addCateFormRules: {
-        cat_name: [
-          { required: true, message: '请输入分类名称', trigger: 'blur' }
-        ]
+        cat_name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }]
       },
       // 父级分类的列表
       parentCateList: [],
@@ -188,9 +224,7 @@ export default {
       // 反之，就说明没有选中任何父级分类
       if (this.selectedKeys.length > 0) {
         // 父级分类的Id
-        this.addCateForm.cat_pid = this.selectedKeys[
-          this.selectedKeys.length - 1
-        ]
+        this.addCateForm.cat_pid = this.selectedKeys[this.selectedKeys.length - 1]
         // 为当前分类的等级赋值
         this.addCateForm.cat_level = this.selectedKeys.length
       } else {
@@ -204,10 +238,7 @@ export default {
     addCate() {
       this.$refs.addCateFormRef.validate(async valid => {
         if (!valid) return
-        const { data: res } = await this.$http.post(
-          'categories',
-          this.addCateForm
-        )
+        const { data: res } = await this.$http.post('categories', this.addCateForm)
 
         if (res.meta.status !== 201) {
           return this.$message.error('添加分类失败！')
